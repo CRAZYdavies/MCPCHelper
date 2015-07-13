@@ -1,0 +1,49 @@
+package com;
+
+import java.io.IOException;
+
+import com.Config.Configuration;
+import com.DB.DBConstants;
+import com.DB.DBMaster;
+import com.Server.ServerThread;
+import com.Utorrent.StopTorrents;
+import com.dao.CheckFavorites;
+import com.webScraper.ScraperThread;
+
+public class HelperCL {
+
+	public static void main(String[] args) throws IOException {
+		final String[] urls = {"https://~/user/ettv/0/3/0","https://~/user/sceneline/0/3/0","https://~/user/TvTeam/0/3/0"};
+		Configuration.readConfigFile("config.xml");
+		DBMaster dbm = new DBMaster();
+		dbm.makeConnection(Configuration.getDBFILENAME());
+		dbm.update(DBConstants.TVEPISODES_TABLE_CREATE);
+		dbm.update(DBConstants.FAVORITES_TABLE_CREATE);
+		for(String s: Configuration.getFavorits().keySet()){
+			dbm.update(DBConstants.INSERT_FAVORITE.replace("~", "'"+s+"'"));
+		}
+		
+		Thread scrapThread = new Thread(new ScraperThread(urls));
+		Thread stopTorrentsThread = new Thread(new StopTorrents());
+		Thread serverThread = new Thread(new ServerThread());
+		serverThread.start();
+		
+		while(true){
+			if(scrapThread.getState() == Thread.State.NEW){
+				scrapThread.start();
+				Thread favoriteThread = new Thread(new CheckFavorites());
+				favoriteThread.run();
+			}
+			if(stopTorrentsThread.getState() == Thread.State.NEW){
+				stopTorrentsThread.start();
+			}
+			if(scrapThread.getState() == Thread.State.TERMINATED){
+				scrapThread = new Thread(new ScraperThread(urls));
+			}
+			if(stopTorrentsThread.getState() == Thread.State.TERMINATED){
+				stopTorrentsThread = new Thread(new StopTorrents());
+			}
+		}
+		
+	}
+}
