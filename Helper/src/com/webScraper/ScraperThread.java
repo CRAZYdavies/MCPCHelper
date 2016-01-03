@@ -3,6 +3,8 @@ package com.webScraper;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.HelperCL;
+
 public class ScraperThread implements Runnable{
 	
 	protected String[] urls2Scrape;
@@ -39,6 +41,9 @@ public class ScraperThread implements Runnable{
 			Thread.sleep(getWaitTime());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+		synchronized(HelperCL.ThreadAlarm){
+			HelperCL.ThreadAlarm.notify();
 		}
 	}
 	

@@ -5,13 +5,14 @@ import java.io.IOException;
 import com.Config.Configuration;
 import com.DB.DBConstants;
 import com.DB.DBMaster;
-import com.Server.ServerThread;
 import com.Utorrent.StopTorrents;
 import com.dao.CheckFavorites;
 import com.webScraper.ScraperThread;
 
 public class HelperCL {
 
+	public static String ThreadAlarm = new String("This is an Alarm");
+	
 	public static void main(String[] args) throws IOException {
 		final String[] urls = {"https://~/user/ettv/0/3/0","https://~/user/sceneline/0/3/0","https://~/user/TvTeam/0/3/0"};
 		Configuration.readConfigFile("config.xml");
@@ -25,8 +26,8 @@ public class HelperCL {
 		
 		Thread scrapThread = new Thread(new ScraperThread(urls));
 		Thread stopTorrentsThread = new Thread(new StopTorrents());
-		Thread serverThread = new Thread(new ServerThread());
-		serverThread.start();
+/*		Thread serverThread = new Thread(new ServerThread());
+		serverThread.start();*/
 		
 		while(true){
 			if(scrapThread.getState() == Thread.State.NEW){
@@ -42,6 +43,17 @@ public class HelperCL {
 			}
 			if(stopTorrentsThread.getState() == Thread.State.TERMINATED){
 				stopTorrentsThread = new Thread(new StopTorrents());
+			}
+			try {
+				synchronized(ThreadAlarm){
+					if((stopTorrentsThread.getState() == Thread.State.TIMED_WAITING) 
+							&& (scrapThread.getState() == Thread.State.TIMED_WAITING)){
+						ThreadAlarm.wait(0);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 		

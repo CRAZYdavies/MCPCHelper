@@ -3,6 +3,8 @@ package com.Utorrent;
 import java.util.Date;
 import java.util.Calendar;
 
+import com.HelperCL;
+
 public class StopTorrents implements  Runnable {
 	
 	
@@ -18,6 +20,9 @@ public class StopTorrents implements  Runnable {
 				e.printStackTrace();
 			}
 		}
+		synchronized(HelperCL.ThreadAlarm){
+			HelperCL.ThreadAlarm.notify();
+		}
 	}
 	
 	public static long getWaitTime(){
@@ -27,7 +32,7 @@ public class StopTorrents implements  Runnable {
 		if(houreOfDay > 15 && houreOfDay < 21){
 			return 300000l; //5 min
 		}
-		return 3600000; //60 min
+		return 3600000l; //60 min
 	}
 
 
