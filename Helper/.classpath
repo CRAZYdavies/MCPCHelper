@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="src/jna-platform-4.1.0.jar"/>
 	<classpathentry kind="lib" path="src/sqlite-jdbc-3.8.7.jar"/>
 	<classpathentry kind="lib" path="src/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="src/javax.mail.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

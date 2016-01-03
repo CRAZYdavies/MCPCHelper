@@ -32,8 +32,7 @@ public class SendMailTLS {
 	
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("mcpchelper81@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-				InternetAddress.parse("slkbludger@gmail.com"));
+			message.setRecipients(Message.RecipientType.TO,	InternetAddress.parse("slkbludger@gmail.com,reba.davies@outlook.com"));
 			message.setSubject(subject);
 			message.setText(bodyMSG);
 	

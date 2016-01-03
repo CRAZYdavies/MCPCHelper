@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Calendar;
 
 import com.HelperCL;
+import com.utilities.Utilities;
 
 public class StopTorrents implements  Runnable {
 	
@@ -17,6 +18,7 @@ public class StopTorrents implements  Runnable {
 			try {
 				Thread.sleep(getWaitTime());
 			} catch (InterruptedException e) {
+				Utilities.sendExceptionEmail(e.getMessage());
 				e.printStackTrace();
 			}
 		}

@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.HelperCL;
+import com.utilities.Utilities;
 
 public class ScraperThread implements Runnable{
 	
@@ -40,6 +41,7 @@ public class ScraperThread implements Runnable{
 		try {
 			Thread.sleep(getWaitTime());
 		} catch (InterruptedException e) {
+			Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		}
 		synchronized(HelperCL.ThreadAlarm){

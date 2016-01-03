@@ -19,6 +19,8 @@ import org.jsoup.select.Elements;
 import com.DB.DBActions;
 import com.beans.TvShowEpisode;
 import com.dao.HtmlToTvShowEpisode;
+import com.email.SendMailTLS;
+import com.utilities.Utilities;
 
 public class Scraper {
 	private String pageURL;
@@ -50,7 +52,7 @@ public class Scraper {
 			httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36");
 			response = httpClient.execute(httpGet);
 			Header[] cookieJar = response.getHeaders("set-cookie");
-			if(response.getStatusLine().getStatusCode() == 200){
+			if(response.getStatusLine().getStatusCode() == 200 && cookieJar.length > 0){
 				for(int i=0;i<cookieJar.length;i++){
 					String[] cookies = response.getHeaders("set-cookie")[i].getValue().split(";");
 					for(int c=0;c<cookies.length;c++){
@@ -61,11 +63,14 @@ public class Scraper {
 				}
 			}
 			else{
+				SendMailTLS sendMail = new SendMailTLS();
+				sendMail.sendEmail("FAILD TO OBTAIN WEB EXTENTION!", response.toString());
 				return "FAIL";
 			}
 			response.close();
 		}
 		catch(Exception e){
+			Utilities.sendExceptionEmail(e.getMessage());
 			return e.getMessage();
 		}
 		return "";
@@ -95,10 +100,10 @@ public class Scraper {
 			List<TvShowEpisode> theShows = makeShows.makeTSEBeans(rawShowObjects);
 			DBActions.insertTvEpisodes(theShows,pageURL);
 		} catch (MalformedURLException MURLe) {
-			// TODO Auto-generated catch block
+			Utilities.sendExceptionEmail(MURLe.getMessage());
 			MURLe.printStackTrace();
 		} catch (Exception e){
-			// TODO Auto-generated catch block
+			Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		} 
 	}
@@ -111,6 +116,7 @@ public class Scraper {
 	      return true;
 	    }
 	    catch (URISyntaxException e) {
+	    	Utilities.sendExceptionEmail(e.getMessage());
 	        return false;
 	    }
 	}

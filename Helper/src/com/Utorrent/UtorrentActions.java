@@ -17,6 +17,7 @@ import org.jsoup.nodes.Document;
 import com.Config.Configuration;
 import com.DB.DBActions;
 import com.beans.TvShowEpisode;
+import com.utilities.Utilities;
 @SuppressWarnings("unused")
 public class UtorrentActions {
 	private static final String BASE_GET_URL = Configuration.getMainURL();//"http://192.168.1.121:8088/gui/";
@@ -41,10 +42,10 @@ public class UtorrentActions {
 			this.setToken(pageDoc.select("div").first().ownText());
 			code = response.getStatusLine().getStatusCode();
 		} catch (MalformedURLException MURLe) {
-			// TODO Auto-generated catch block
+			Utilities.sendExceptionEmail(MURLe.getMessage());
 			MURLe.printStackTrace();
 		} catch (Exception e){
-			// TODO Auto-generated catch block
+			Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		}
 		return code;
@@ -67,6 +68,7 @@ public class UtorrentActions {
 			JSONObject jo = new JSONObject(theJO);
 			ja = jo.getJSONArray("torrents");
 		}catch(Exception e){
+			Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		}
 		return ja;
@@ -101,9 +103,9 @@ public class UtorrentActions {
 						Document pageDoc = Jsoup.parse(httpEntity.getContent(), charset, httpGet.getURI().getPath());
 						int code = response.getStatusLine().getStatusCode();
 						response.close();
-						//TODO add in email/text option to notify download is done
+						Utilities.sendGeneralEmail("Show ready for watching", parts[2]);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
+						Utilities.sendExceptionEmail(e.getMessage());
 						e.printStackTrace();
 					}
 				}
@@ -132,7 +134,7 @@ public class UtorrentActions {
 			int code = response.getStatusLine().getStatusCode();
 			response.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -147,7 +149,7 @@ public class UtorrentActions {
 			int code = response.getStatusLine().getStatusCode();
 			response.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		}
 	}

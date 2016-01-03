@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import com.DB.DBActions;
 import com.Utorrent.UtorrentActions;
+import com.utilities.Utilities;
 
 public class CheckFavorites implements Runnable{
 
@@ -29,6 +30,7 @@ public class CheckFavorites implements Runnable{
 			}
 			result.close();
 		} catch (SQLException e) {
+			Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		}
 	}

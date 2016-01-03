@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.beans.TvShowEpisode;
+import com.utilities.Utilities;
 
 public class DBActions {
 
@@ -50,6 +51,7 @@ public class DBActions {
 				return true;
 			}
 		} catch (SQLException e) {
+			Utilities.sendExceptionEmail(e.getMessage());
 			return false;
 		}
 		return false;

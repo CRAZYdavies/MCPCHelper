@@ -7,6 +7,7 @@ import com.DB.DBConstants;
 import com.DB.DBMaster;
 import com.Utorrent.StopTorrents;
 import com.dao.CheckFavorites;
+import com.utilities.Utilities;
 import com.webScraper.ScraperThread;
 
 public class HelperCL {
@@ -52,6 +53,7 @@ public class HelperCL {
 					}
 				}
 			} catch (Exception e) {
+				Utilities.sendExceptionEmail(e.getMessage());
 				e.printStackTrace();
 				break;
 			}

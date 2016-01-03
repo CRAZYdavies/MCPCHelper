@@ -8,6 +8,8 @@ import java.sql.Statement;
 
 import javax.naming.InvalidNameException;
 
+import com.utilities.Utilities;
+
 public class DBMaster {
 	private Connection conn;
 
@@ -51,6 +53,7 @@ public class DBMaster {
 					return -2;
 				}
 			}catch(Exception e){
+				Utilities.sendExceptionEmail(e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -65,6 +68,7 @@ public class DBMaster {
 				ResultSet temp = stmt.executeQuery(sql);
 				return temp;
 			}catch(Exception e){
+				Utilities.sendExceptionEmail(e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -75,6 +79,7 @@ public class DBMaster {
 		try {
 			getConn().close();
 		} catch (SQLException e) {
+			Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		}finally{
 			setConn(null);
