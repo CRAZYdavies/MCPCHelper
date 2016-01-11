@@ -34,7 +34,7 @@ public class SendMailTLS {
 			message.setFrom(new InternetAddress("mcpchelper81@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,	InternetAddress.parse("slkbludger@gmail.com,reba.davies@outlook.com"));
 			message.setSubject(subject);
-			message.setText(bodyMSG);
+			message.setText(messageSanitizer(bodyMSG));
 	
 			Transport.send(message);
 	
@@ -43,5 +43,18 @@ public class SendMailTLS {
 		} catch (Exception e) {
 			return e.getMessage();
 		}
+	}
+	
+	private String messageSanitizer(String msg){
+		String clean = "NO MSG";
+		if(msg != null && msg.length() > 0){
+			clean = "";
+			for(int i =0;i<msg.length();i++){
+				if(msg.charAt(i) >0 && msg.charAt(i) < 128){
+					clean = clean + msg.charAt(i);
+				}
+			}
+		}
+		return clean;
 	}
 }

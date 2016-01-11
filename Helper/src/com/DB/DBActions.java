@@ -15,7 +15,7 @@ public class DBActions {
 		int showsAdded = 0;
 		int result = -1;
 		for(TvShowEpisode tse : shows){
-			if(tse.isValid()){
+			if(tse.isValidTPB()){
 				boolean dupe = checkForDups(tse, dbm);
 				if(dupe){
 					continue;
@@ -43,8 +43,56 @@ public class DBActions {
 		return showsAdded;
 	}
 	
+	public static int insertIPTTvEpisodes(List<TvShowEpisode> shows, String url){
+		DBMaster dbm = new DBMaster();
+		dbm.makeConnection(DBConstants.DB_FILE_NAME);
+		int showsAdded = 0;
+		int result = -1;
+		for(TvShowEpisode tse : shows){
+			if(tse.isValidIPT()){
+				boolean dupe = checkForDupsIPT(tse, dbm);
+				if(dupe){
+					continue;
+				}
+				result = dbm.update(tse.insertIPTSQLstatment());
+				if(result == 1){
+					System.out.println("Added to the db: "+tse.getShowname()+"-S"+tse.getSeason()+"E"+tse.getEpisode());
+					showsAdded++;
+				}
+				else if(result == -2){
+					showsAdded = 0;
+					System.out.println("DB is LOCKED!!!");
+					break;
+				}
+				else if (result == -1){
+					//System.out.println("Allready in db: "+tse.getShowname()+"-S"+tse.getSeason()+"E"+tse.getEpisode());
+				}
+				else{
+					continue;
+				}
+			}
+		}
+		System.out.println("Shows added "+showsAdded+" from: "+url);
+		dbm.closeConn();
+		return showsAdded;
+	}
+	
 	public static boolean checkForDups(TvShowEpisode tse,DBMaster dbm){
 		String sql = DBConstants.CHECK_FOR_DUPS.replace("~1", tse.getShowname()).replace("~2", ""+tse.getSeason()).replace("~3", ""+tse.getEpisode());
+		ResultSet temp = dbm.select(sql);
+		try {
+			if(temp.isBeforeFirst()){
+				return true;
+			}
+		} catch (SQLException e) {
+			Utilities.sendExceptionEmail(e.getMessage());
+			return false;
+		}
+		return false;
+	}
+	
+	public static boolean checkForDupsIPT(TvShowEpisode tse,DBMaster dbm){
+		String sql = DBConstants.CHECK_FOR_DUPS_IPT.replace("~1", tse.getShowname()).replace("~2", ""+tse.getSeason()).replace("~3", ""+tse.getEpisode());
 		ResultSet temp = dbm.select(sql);
 		try {
 			if(temp.isBeforeFirst()){

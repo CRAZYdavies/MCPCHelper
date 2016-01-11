@@ -16,7 +16,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.beans.TvShowEpisode;
-import com.dao.HtmlToTvShowEpisode;
+import com.dao.IPTToTvShowEpisode;
+import com.dao.TPBToTvShowEpisode;
 
 public class IPTtestScraper {
 
@@ -54,17 +55,16 @@ public class IPTtestScraper {
 				charset = contentArray[1].trim().split("=")[1];
 			}
 			Document pageDoc = Jsoup.parse(httpEntity.getContent(), charset, httpGet.getURI().getPath());
-			Element results = pageDoc.getElementById("searchResult");
+			Elements results = pageDoc.getElementsByClass("torrents");
 			response.close();
-			Elements rawShowObjects = results.select("td.vertTh+td");
-			HtmlToTvShowEpisode makeShows = new HtmlToTvShowEpisode();
+			Elements rawShowObjects = results.select("tr");
+			IPTToTvShowEpisode makeShows = new IPTToTvShowEpisode();
 			List<TvShowEpisode> theShows = makeShows.makeTSEBeans(rawShowObjects);
 		} catch (MalformedURLException MURLe) {
 			MURLe.printStackTrace();
 		} catch (Exception e){
 			e.printStackTrace();
 		} 
-
 	}
 
 }

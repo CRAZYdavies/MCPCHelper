@@ -11,7 +11,7 @@ import org.jsoup.select.Elements;
 
 import com.beans.TvShowEpisode;
 
-public class HtmlToTvShowEpisode {
+public class TPBToTvShowEpisode {
 
 	
 	public List<TvShowEpisode> makeTSEBeans(Elements results){

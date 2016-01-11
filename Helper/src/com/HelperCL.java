@@ -21,6 +21,7 @@ public class HelperCL {
 		dbm.makeConnection(Configuration.getDBFILENAME());
 		dbm.update(DBConstants.TVEPISODES_TABLE_CREATE);
 		dbm.update(DBConstants.FAVORITES_TABLE_CREATE);
+		dbm.update(DBConstants.TVEPISODESIPT_TABLE_CREATE);
 		for(String s: Configuration.getFavorits().keySet()){
 			dbm.update(DBConstants.INSERT_FAVORITE.replace("~", "'"+s+"'"));
 		}

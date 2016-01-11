@@ -46,7 +46,8 @@ public class DBMaster {
 				//conn.commit();
 				return results;
 			}catch(SQLException sqle){
-				if("UNIQUE constraint failed: tvepisodes.tid, tvepisodes.md5_checksum".equalsIgnoreCase(sqle.getMessage())){
+				if("UNIQUE constraint failed: tvepisodes.tid, tvepisodes.md5_checksum".equalsIgnoreCase(sqle.getMessage()) ||
+					"UNIQUE constraint failed: tvepisodesipt.tid, tvepisodesipt.torrentlink".equalsIgnoreCase(sqle.getMessage())){
 					return 0;
 				}
 				if("database is locked".equalsIgnoreCase(sqle.getMessage())){

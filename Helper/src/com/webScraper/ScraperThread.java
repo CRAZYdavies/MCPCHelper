@@ -27,14 +27,16 @@ public class ScraperThread implements Runnable{
 			if(ext != null && ext.length() > 0 && !ext.equalsIgnoreCase("FAIL")){
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(new Date());
-				System.out.println(calendar.get(Calendar.DAY_OF_MONTH)+" "+calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE));
+				//System.out.println(calendar.get(Calendar.DAY_OF_MONTH)+"-"+(calendar.get(Calendar.MONTH)+1)+"-"+calendar.get(Calendar.YEAR)+" "+calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE));
+				System.out.println(calendar.getTime());
 				for(int i=0;i<this.urls2Scrape.length;i++){
 					String theURL = this.urls2Scrape[i].replace("~", ext);
 					scrap.setPageURL(theURL);
 					if(scrap.getPageURL().length() != 0){
-						scrap.getTVShows();
+						scrap.getTPBShows();
 					}
 				}
+				scrap.getIPTShows();
 			}
 		}
 		IN_STATE = WAITING;
