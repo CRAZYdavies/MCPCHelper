@@ -14,14 +14,15 @@ public class ServerClientThread implements Runnable {
 	}
 	@Override
 	public void run() {
+		ServerAPI sapi = new ServerAPI();
 		try (PrintWriter out = new PrintWriter(theSocket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(theSocket.getInputStream()));) {
 			String inputLine, outputLine;
-			outputLine = ServerAPI.processInput(null);
+			outputLine = sapi.processInput(null);
 			out.println(outputLine);
 
 			while ((inputLine = in.readLine()) != null) {
-				outputLine = ServerAPI.processInput(inputLine);
+				outputLine = sapi.processInput(inputLine);
 				out.println(outputLine);
 				if (outputLine.equals("EXIT"))
 					break;

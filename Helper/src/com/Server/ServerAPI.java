@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.DB.DBActions;
+import com.Utorrent.UtorrentActions;
 
 public class ServerAPI {
 	private static final String GET_SHOWS_LIST = "GET SHOWS LIST";
@@ -17,8 +18,13 @@ public class ServerAPI {
 	private static final String DOWNLOAD_EPISODE = "DOWNLOAD EPISODE";
 	private static final String DOWNLOAD_SEASON = "DOWNLOAD SEASON";
 	private static final String ADD_FAVORITE = "ADD FAVORITE";
+	private UtorrentActions UA = null;
 	
-	public static String processInput(String inputLine) {
+	ServerAPI(){
+		this.UA = new UtorrentActions();
+	}
+	
+	public String processInput(String inputLine) {
 		String input = inputLine==null?"":inputLine;
 		Object[] inputs = fixInput(input);
 		if(inputs.length > 0){
@@ -36,14 +42,14 @@ public class ServerAPI {
 				}
 			case DOWNLOAD_EPISODE:
 				if(inputs.length > 0 && inputs[1] != null){
-					return downlaodEpisode(inputs[1].toString());
+					return downlaodEpisode(inputs[1].toString(),UA);
 				}
 				else{
 					return "Invalid inputs!!";
 				}
 			case DOWNLOAD_SEASON:
 				if(inputs.length > 0 && inputs[1] != null){
-					return downlaodSeason(inputs[1].toString());
+					return downlaodSeason(inputs[1].toString(),UA);
 				}
 				else{
 					return "Invalid inputs!!";
@@ -62,19 +68,24 @@ public class ServerAPI {
 		return "ServerAPI v1.0";
 	}
 	
-	private static String addFavorite(String showName) {
-		// TODO Auto-generated method stub
-		return null;
+	private static String addFavorite(String md5) {
+		int result = DBActions.addFavorite(md5);
+		JSONObject jo = new JSONObject();
+		jo.put("result", result);
+		return jo.toString();
 	}
 
-	private static String downlaodSeason(String md5) {
-		// TODO Auto-generated method stub
-		return null;
+	private static String downlaodSeason(String md5, UtorrentActions ua) {
+		JSONObject jo = new JSONObject();
+		jo.put("result", "ERROR: Not implamented yet!");
+		return jo.toString();
 	}
 
-	private static String downlaodEpisode(String md5) {
-		// TODO Auto-generated method stub
-		return null;
+	private static String downlaodEpisode(String magnetlink, UtorrentActions ua) {
+		ua.downloadTorrent(magnetlink);
+		JSONObject jo = new JSONObject();
+		jo.put("result", "downloading");
+		return jo.toString();
 	}
 
 	private static String findShows(String showname) {
@@ -87,11 +98,13 @@ public class ServerAPI {
 			String season = rs.getString("season") == null?"0":rs.getString("season");
 			String episode = rs.getString("episode") == null?"0":rs.getString("episode");
 			String md5 = rs.getString("md5_checksum");
+			String magnetlink = rs.getString("magnetlink");
 			JSONObject jo = new JSONObject();
 			jo.put("showname", showName);
 			jo.put("season",season);
 			jo.put("episode",episode);
 			jo.put("MD5",md5 );
+			jo.put("magnetlink",magnetlink);
 			shows.put(jo);
 			done = !rs.next();
 		}
@@ -141,14 +154,14 @@ public class ServerAPI {
 		try{
 		while(!done){
 			String showName = rs.getString("showname");
-			String season = rs.getString("season") == null?"0":rs.getString("season");
-			String episode = rs.getString("episode") == null?"0":rs.getString("episode");
 			String md5 = rs.getString("md5_checksum");
+			Long dateuploaded = rs.getLong("dateuploaded");
+			String magnetlink = rs.getString("magnetlink");
 			JSONObject jo = new JSONObject();
 			jo.put("showname", showName);
-			jo.put("season",season);
-			jo.put("episode",episode);
+			jo.put("dateuploaded", dateuploaded);
 			jo.put("MD5",md5 );
+			jo.put("magnetlink",magnetlink);
 			shows.put(jo);
 			done = !rs.next();
 		}
