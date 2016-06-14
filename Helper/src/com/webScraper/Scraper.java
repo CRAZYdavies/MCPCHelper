@@ -106,10 +106,10 @@ public class Scraper {
 			List<TvShowEpisode> theShows = makeShows.makeTSEBeans(rawShowObjects);
 			DBActions.insertTvEpisodes(theShows,pageURL);
 		} catch (MalformedURLException MURLe) {
-			Utilities.sendExceptionEmail(MURLe.getMessage());
+			//Utilities.sendExceptionEmail(MURLe.getMessage());
 			MURLe.printStackTrace();
 		} catch (Exception e){
-			Utilities.sendExceptionEmail(e.getMessage());
+			//Utilities.sendExceptionEmail(e.getMessage());
 			e.printStackTrace();
 		} 
 	}

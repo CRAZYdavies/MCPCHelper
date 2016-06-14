@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.Config.Configuration;
 import com.DB.DBConstants;
 import com.DB.DBMaster;
+import com.Server.ServerThread;
 import com.Utorrent.StopTorrents;
 import com.dao.CheckFavorites;
 import com.utilities.Utilities;
@@ -28,8 +29,8 @@ public class HelperCL {
 		
 		Thread scrapThread = new Thread(new ScraperThread(urls));
 		Thread stopTorrentsThread = new Thread(new StopTorrents());
-/*		Thread serverThread = new Thread(new ServerThread());
-		serverThread.start();*/
+		Thread serverThread = new Thread(new ServerThread());
+		serverThread.start();
 		
 		while(true){
 			if(scrapThread.getState() == Thread.State.NEW){

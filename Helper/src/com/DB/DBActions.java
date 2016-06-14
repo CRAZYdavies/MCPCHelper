@@ -156,4 +156,12 @@ public class DBActions {
 		ResultSet result = dbm.select(sql);
 		return result;
 	}
+	
+	public static ResultSet findShows(String showname){
+		DBMaster dbm = new DBMaster();
+		dbm.makeConnection(DBConstants.DB_FILE_NAME);
+		String sql = DBConstants.FIND_SHOW;
+		ResultSet result = dbm.select(sql.replace("~1", showname));
+		return result;
+	}
 }

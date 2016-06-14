@@ -12,15 +12,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.beans.TvShowEpisode;
 import com.dao.IPTToTvShowEpisode;
-import com.dao.TPBToTvShowEpisode;
 
 public class IPTtestScraper {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
