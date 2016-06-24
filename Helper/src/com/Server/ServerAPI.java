@@ -62,20 +62,21 @@ public class ServerAPI {
 					return "Invalid inputs!!";
 				}
 			default:
-				return "ServerAPI v1.0";
+				return "Default ServerAPI v1.0";
 			}
 		}
 		return "ServerAPI v1.0";
 	}
 	
-	private static String addFavorite(String md5) {
-		int result = DBActions.addFavorite(md5);
+	private static String addFavorite(String showname) {
+		int result = DBActions.addFavorite(showname);
 		JSONObject jo = new JSONObject();
 		jo.put("result", result);
 		return jo.toString();
 	}
 
 	private static String downlaodSeason(String md5, UtorrentActions ua) {
+		
 		JSONObject jo = new JSONObject();
 		jo.put("result", "ERROR: Not implamented yet!");
 		return jo.toString();

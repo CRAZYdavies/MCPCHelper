@@ -20,6 +20,7 @@ import org.jsoup.select.Elements;
 import com.DB.DBActions;
 import com.beans.TvShowEpisode;
 import com.dao.IPTToTvShowEpisode;
+import com.dao.KATToTvShowEpisode;
 import com.dao.TPBToTvShowEpisode;
 import com.email.SendMailTLS;
 import com.utilities.Utilities;
@@ -81,6 +82,7 @@ public class Scraper {
 	public void getTVShows(){
 		getTPBShows();
 		getIPTShows();
+		getKATorrents();
 	}
 	
 	public void getTPBShows() {
@@ -153,6 +155,45 @@ public class Scraper {
 			IPTToTvShowEpisode makeShows = new IPTToTvShowEpisode();
 			List<TvShowEpisode> theShows = makeShows.makeTSEBeans(rawShowObjects);
 			DBActions.insertIPTTvEpisodes(theShows, "https://www.iptorrents.com/t?5");
+		} catch (MalformedURLException MURLe) {
+			MURLe.printStackTrace();
+		} catch (Exception e){
+			e.printStackTrace();
+		} 
+	}
+	
+	public void getKATorrents(){
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpResponse response = null;
+		try {
+			HttpGet httpGet = new HttpGet("https://kat.cr/tv/?field=time_add&sorder=desc");
+			httpGet.addHeader("accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+			httpGet.addHeader("accept-encoding","gzip, deflate, sdch");
+			httpGet.addHeader("accept-language","en-US,en;q=0.8");
+			httpGet.addHeader("dnt","1");
+			httpGet.addHeader("upgrade-insecure-requests","1");
+			httpGet.addHeader("user-agent","Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36");
+			response = httpClient.execute(httpGet);
+			Header contentType = response.getFirstHeader("Content-Type");
+			HttpEntity httpEntity = response.getEntity();
+			String[] contentArray = contentType.getValue().split(";");
+			String charset = "UTF-8";
+			if(contentArray.length > 1 && contentArray[1].contains("=")){
+				charset = contentArray[1].trim().split("=")[1];
+			}
+			Document pageDoc = Jsoup.parse(httpEntity.getContent(), charset, httpGet.getURI().getPath());
+			Elements oddResults = pageDoc.getElementsByClass("odd");
+			Elements evenResults = pageDoc.getElementsByClass("even");
+			Elements allshows = new Elements();
+			for(int i=0;i<evenResults.size();i++){
+				allshows.add(oddResults.get(i));
+				allshows.add(evenResults.get(i));
+			}
+			allshows.add(oddResults.last());
+			response.close();
+			KATToTvShowEpisode kat = new KATToTvShowEpisode();
+			List<TvShowEpisode> theShows = kat.makeKATBeans(allshows);
+			DBActions.insertTvEpisodes(theShows,"https://kat.cr/tv/?field=time_add&sorder=desc");
 		} catch (MalformedURLException MURLe) {
 			MURLe.printStackTrace();
 		} catch (Exception e){

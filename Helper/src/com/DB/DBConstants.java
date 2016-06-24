@@ -22,4 +22,5 @@ public class DBConstants {
 	public static final String CHECK_FOR_DUPS_IPT = "select * from tvepisodesipt where showname = '~1' and season = ~2 and episode = ~3";
 	public static final String GET_ALL_SHOWS = "select showname,md5_checksum,magnetlink,dateuploaded from tvepisodes order by dateuploaded desc LIMIT 100";
 	public static final String FIND_SHOW = "select * from tvepisodes where showname like '%~1%'";
+	public static final String GET_SEASON = "select * from tvepisodes where season = (select season from tvepisodes where md5_checksum = '~1') and showname = (select showname from tvepisodes where md5_checksum = '~1')";
 }
